@@ -218,17 +218,31 @@ export default class CalendarView extends ViewMode {
 
         for (const note of notes) {
             const startDate = note.getAttributeValue("label", "startDate") ?? note.getAttributeValue("label", "dateNote");
-            const customTitle = note.getAttributeValue("label", "calendar:title");
-            const color = note.getAttributeValue("label", "calendar:color") ??  note.getAttributeValue("label", "color") ?? undefined;
-
             if (!startDate) {
                 continue;
             }
 
+            const customTitle = note.getAttributeValue("label", "calendar:title");
+            const color = note.getAttributeValue("label", "calendar:color") ?? note.getAttributeValue("label", "color") ?? undefined;
+            // the user can specify one or multiple attributes to be promoted onto the calendar view by setting `#calendar:promotedAttributes` at the note level
+            // their values will then be rentered into the event title and appear as "[eventIcon] $eventTitle [#promotedAttributeX=valueX] [#promotedAttributeY=valueY]"
+            const promotedAttrs = note
+                .getAttributes()
+                .filter((attr) => attr.type == "label" && attr.name == "calendar:promotedAttribute")
+                .map((attr) => attr.value.substring(1));
+            let titleExtended = "";
+            if (promotedAttrs && promotedAttrs.length) {
+                const promotedValues = note
+                    .getAttributes()
+                    .filter((attr) => promotedAttrs.includes(attr.name))
+                    .map((attr) => [attr.name, attr.value]);
+                for (const defined of promotedValues) titleExtended = titleExtended + ` [#${defined[0]}="${defined[1]}"]`;
+            }
+
             const titles = await CalendarView.#parseCustomTitle(customTitle, note);
             for (const title of titles) {
-                const eventData: typeof events[0] = {
-                    title: title,
+                const eventData: (typeof events)[0] = {
+                    title: title + titleExtended,
                     start: startDate,
                     url: `#${note.noteId}`,
                     noteId: note.noteId,

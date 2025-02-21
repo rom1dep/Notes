@@ -112,7 +112,7 @@ export default class CalendarView extends ViewMode {
 
                 const iconClass = e.event.extendedProps.iconClass;
                 if (iconClass) {
-                    html += `<span class="${iconClass}"></span> `;
+                    html += `<span class="${iconClass}" style="vertical-align: middle"></span> `;
                 }
 
                 html += utils.escapeHtml(e.event.title);

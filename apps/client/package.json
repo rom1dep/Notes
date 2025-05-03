@@ -22,6 +22,7 @@
     "@mind-elixir/node-menu": "1.0.5",
     "@popperjs/core": "2.11.8",
     "@triliumnext/commons": "workspace:*",
+    "ag-grid-community": "33.2.4",
     "bootstrap": "5.3.5",
     "dayjs": "1.11.13",
     "dayjs-plugin-utc": "0.1.2",

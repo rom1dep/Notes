@@ -21,9 +21,10 @@ const TPL = /*html*/`
         <span style="white-space: nowrap">${t("book_properties.view_type")}:&nbsp; &nbsp;</span>
 
         <select class="view-type-select form-select form-select-sm">
-            <option value="grid">${t("book_properties.grid")}</option>
-            <option value="list">${t("book_properties.list")}</option>
+            <option value="grid-cards">${t("book_properties.grid")}</option>
+            <option value="list-cards">${t("book_properties.list")}</option>
             <option value="calendar">${t("book_properties.calendar")}</option>
+            <option value="table">${t("book_properties.table")}</option>
         </select>
     </div>
 
@@ -113,12 +114,12 @@ export default class BookPropertiesWidget extends NoteContextAwareWidget {
             return;
         }
 
-        const viewType = this.note.getLabelValue("viewType") || "grid";
+        const viewType = this.note.getLabelValue("viewType") || "grid-cards";
 
         this.$viewTypeSelect.val(viewType);
 
-        this.$expandChildrenButton.toggle(viewType === "list");
-        this.$collapseAllButton.toggle(viewType === "list");
+        this.$expandChildrenButton.toggle(viewType === "list-cards");
+        this.$collapseAllButton.toggle(viewType === "list-cards");
     }
 
     async toggleViewType(type: string) {
@@ -126,7 +127,7 @@ export default class BookPropertiesWidget extends NoteContextAwareWidget {
             return;
         }
 
-        if (!["list", "grid", "calendar"].includes(type)) {
+        if (!["list-cards", "grid-cards", "calendar", "table"].includes(type)) {
             throw new Error(t("book_properties.invalid_view_type", { type }));
         }
 

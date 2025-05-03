@@ -32,9 +32,10 @@ export const byNoteType: Record<Exclude<NoteType, "book">, string | null> = {
 };
 
 export const byBookType: Record<ViewTypeOptions, string | null> = {
-    list: null,
-    grid: null,
-    calendar: "xWbu3jpNWapp"
+    "list-cards": null,
+    "grid-cards": null,
+    "calendar": "xWbu3jpNWapp",
+    "table": null
 };
 
 export default class ContextualHelpButton extends NoteContextAwareWidget {

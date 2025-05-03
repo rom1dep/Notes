@@ -16,30 +16,30 @@ const TPL = /*html*/`
         height: 100%;
     }
 
-    .note-list.grid-view .note-list-container {
+    .note-list.grid-cards .note-list-container {
         display: flex;
         flex-wrap: wrap;
     }
 
-    .note-list.grid-view .note-book-card {
+    .note-list.grid-cards .note-book-card {
         flex-basis: 300px;
         border: 1px solid transparent;
     }
 
-    .note-list.grid-view .note-expander {
+    .note-list.grid-cards .note-expander {
         display: none;
     }
 
-    .note-list.grid-view .note-book-card {
+    .note-list.grid-cards .note-book-card {
         max-height: 300px;
     }
 
-    .note-list.grid-view .note-book-card img {
+    .note-list.grid-cards .note-book-card img {
         max-height: 220px;
         object-fit: contain;
     }
 
-    .note-list.grid-view .note-book-card:hover {
+    .note-list.grid-cards .note-book-card:hover {
         cursor: pointer;
         border: 1px solid var(--main-border-color);
         background: var(--more-accented-background-color);
@@ -157,7 +157,7 @@ const TPL = /*html*/`
     </div>
 </div>`;
 
-class ListOrGridView extends ViewMode {
+class ListOrGridCards extends ViewMode {
     private $noteList: JQuery<HTMLElement>;
 
     private parentNote: FNote;
@@ -194,8 +194,7 @@ class ListOrGridView extends ViewMode {
             this.pageSize = 20;
         }
 
-        this.$noteList.addClass(`${this.viewType}-view`);
-
+        this.$noteList.addClass(`${this.viewType}`);
         this.showNotePath = args.showNotePath;
     }
 
@@ -303,14 +302,14 @@ class ListOrGridView extends ViewMode {
                     .append($expander)
                     .append($('<span class="note-icon">').addClass(note.getIcon()))
                     .append(
-                        this.viewType === "grid"
+                        this.viewType === "grid-cards"
                             ? $('<span class="note-book-title">').text(await treeService.getNoteTitle(note.noteId, this.parentNote.noteId))
                             : (await linkService.createLink(notePath, { showTooltip: false, showNotePath: this.showNotePath })).addClass("note-book-title")
                     )
                     .append($renderedAttributes)
             );
 
-        if (this.viewType === "grid") {
+        if (this.viewType === "grid-cards") {
             $card
                 .addClass("block-link")
                 .attr("data-href", `#${notePath}`)
@@ -334,13 +333,13 @@ class ListOrGridView extends ViewMode {
     }
 
     async toggleContent($card: JQuery<HTMLElement>, note: FNote, expand: boolean) {
-        if (this.viewType === "list" && ((expand && $card.hasClass("expanded")) || (!expand && !$card.hasClass("expanded")))) {
+        if (this.viewType === "list-cards" && ((expand && $card.hasClass("expanded")) || (!expand && !$card.hasClass("expanded")))) {
             return;
         }
 
         const $expander = $card.find("> .note-book-header .note-expander");
 
-        if (expand || this.viewType === "grid") {
+        if (expand || this.viewType === "grid-cards") {
             $card.addClass("expanded");
             $expander.addClass("bx-chevron-down").removeClass("bx-chevron-right");
         } else {
@@ -348,7 +347,7 @@ class ListOrGridView extends ViewMode {
             $expander.addClass("bx-chevron-right").removeClass("bx-chevron-down");
         }
 
-        if ((expand || this.viewType === "grid") && $card.find(".note-book-content").length === 0) {
+        if ((expand || this.viewType === "grid-cards") && $card.find(".note-book-content").length === 0) {
             $card.append(await this.renderNoteContent(note));
         }
     }
@@ -358,7 +357,7 @@ class ListOrGridView extends ViewMode {
 
         try {
             const { $renderedContent, type } = await contentRenderer.getRenderedContent(note, {
-                trim: this.viewType === "grid" // for grid only short content is needed
+                trim: this.viewType === "grid-cards" // for grid only short content is needed
             });
 
             if (this.highlightRegex) {
@@ -379,7 +378,7 @@ class ListOrGridView extends ViewMode {
             $content.append("rendering error");
         }
 
-        if (this.viewType === "list") {
+        if (this.viewType === "list-cards") {
             const imageLinks = note.getRelations("imageLink");
 
             const childNotes = (await note.getChildNotes()).filter((childNote) => !imageLinks.find((rel) => rel.value === childNote.noteId));
@@ -393,4 +392,5 @@ class ListOrGridView extends ViewMode {
     }
 }
 
-export default ListOrGridView;
+export default ListOrGridCards;
+

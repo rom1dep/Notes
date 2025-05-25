@@ -6,6 +6,7 @@ import treeService from "../../services/tree.js";
 import utils from "../../services/utils.js";
 import type FNote from "../../entities/fnote.js";
 import ViewMode, { type ViewModeArgs } from "./view_mode.js";
+import Mark from "mark.js";
 
 const TPL = /*html*/`
 <div class="note-list">
@@ -318,8 +319,8 @@ class ListOrGridView extends ViewMode {
         $expander.on("click", () => this.toggleContent($card, note, !$card.hasClass("expanded")));
 
         if (this.highlightRegex) {
-            const Mark = new (await import("mark.js")).default($card.find(".note-book-title")[0]);
-            Mark.markRegExp(this.highlightRegex, {
+            const mark = new Mark($card.find(".note-book-title")[0]);
+            mark.markRegExp(this.highlightRegex, {
                 element: "span",
                 className: "ck-find-result"
             });
@@ -359,8 +360,8 @@ class ListOrGridView extends ViewMode {
             });
 
             if (this.highlightRegex) {
-                const Mark = new (await import("mark.js")).default($renderedContent[0]);
-                Mark.markRegExp(this.highlightRegex, {
+                const mark = new Mark($renderedContent[0]);
+                mark.markRegExp(this.highlightRegex, {
                     element: "span",
                     className: "ck-find-result"
                 });
